@@ -3,11 +3,12 @@ package com.example.touchlock
 import android.accessibilityservice.AccessibilityService
 import android.accessibilityservice.AccessibilityServiceInfo
 import android.graphics.PixelFormat
-import android.view.Gravity
 import android.view.KeyEvent
+import android.view.Gravity
 import android.view.View
 import android.view.WindowManager
 import android.view.accessibility.AccessibilityEvent
+import android.widget.Toast
 
 class TouchLockService : AccessibilityService() {
 
@@ -16,14 +17,21 @@ class TouchLockService : AccessibilityService() {
 
     override fun onServiceConnected() {
         super.onServiceConnected()
-        // Обязательно: без этого флага сервис не получит onKeyEvent
         serviceInfo = serviceInfo.apply {
             flags = flags or AccessibilityServiceInfo.FLAG_REQUEST_FILTER_KEY_EVENTS
         }
+        Toast.makeText(this, "TouchLock: сервис запущен", Toast.LENGTH_SHORT).show()
     }
 
     override fun onKeyEvent(event: KeyEvent): Boolean {
         if (event.action == KeyEvent.ACTION_DOWN) {
+            // ВРЕМЕННО: показываем код КАЖДОЙ нажатой клавиши для диагностики
+            Toast.makeText(
+                this,
+                "Нажата клавиша, код: ${event.keyCode}",
+                Toast.LENGTH_SHORT
+            ).show()
+
             when (event.keyCode) {
                 KeyEvent.KEYCODE_STAR -> {
                     lockTouch(true)
